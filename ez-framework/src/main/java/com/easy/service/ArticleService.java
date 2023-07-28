@@ -1,6 +1,7 @@
 package com.easy.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.easy.domain.ResponseResult;
 import com.easy.domain.entity.Article;
 
 /**
@@ -9,4 +10,6 @@ import com.easy.domain.entity.Article;
  * @description:
  */
 public interface ArticleService extends IService<Article> {
+
+    ResponseResult hotArticleList();
 }

@@ -1,6 +1,6 @@
 package com.easy.controller;
 
-import com.easy.domain.entity.Article;
+import com.easy.domain.ResponseResult;
 import com.easy.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +21,11 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
-    @GetMapping("/list")
-    public List<Article> test() {
-        return articleService.list();
+    @GetMapping("/hotArticleList")
+    public ResponseResult hotArticleList() {
+
+        ResponseResult result = articleService.hotArticleList();
+
+        return result;
     }
 }
