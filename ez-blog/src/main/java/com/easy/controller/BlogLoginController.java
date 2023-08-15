@@ -2,6 +2,8 @@ package com.easy.controller;
 
 import com.easy.domain.ResponseResult;
 import com.easy.domain.entity.User;
+import com.easy.enums.AppHttpCodeEnum;
+import com.easy.exception.SystemException;
 import com.easy.service.BlogLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -18,7 +20,7 @@ public class BlogLoginController {
     public ResponseResult login(@RequestBody User user){
         if(!StringUtils.hasText(user.getUserName())) {
             // 提示：必须要传用户名
-
+            throw new SystemException(AppHttpCodeEnum.REQUIRE_USERNAME);
         }
         return blogLoginService.login(user);
     }

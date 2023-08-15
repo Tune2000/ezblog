@@ -1,7 +1,8 @@
-package com.easy.exception;
+package com.easy.handler.exception;
 
 import com.easy.domain.ResponseResult;
 import com.easy.enums.AppHttpCodeEnum;
+import com.easy.exception.SystemException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
