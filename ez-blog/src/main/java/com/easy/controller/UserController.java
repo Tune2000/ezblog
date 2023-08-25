@@ -1,5 +1,6 @@
 package com.easy.controller;
 
+import com.easy.annotation.SystemLog;
 import com.easy.domain.ResponseResult;
 import com.easy.domain.entity.User;
 import com.easy.service.UserService;
@@ -19,6 +20,7 @@ public class UserController {
     }
 
     @PutMapping("/userInfo")
+    @SystemLog(BusinessName="更新用户信息")
     public ResponseResult updateUserInfo(@RequestBody User user){
         return userService.updateUserInfo(user);
     }
