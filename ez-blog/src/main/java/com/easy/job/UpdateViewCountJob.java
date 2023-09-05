@@ -20,7 +20,7 @@ public class UpdateViewCountJob {
     @Autowired
     private ArticleService articleService;
 
-    @Scheduled(cron = "0/5 * * * * ?")
+    @Scheduled(cron = "0/60 * * * * ?")
     //定时同步Redis中的数据到数据库
     public void updateViewCount(){
         //获取redis中的浏览量
