@@ -2,6 +2,7 @@ package com.easy.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.easy.domain.entity.Tag;
+import org.apache.ibatis.annotations.Param;
 
 
 /**
@@ -12,4 +13,5 @@ import com.easy.domain.entity.Tag;
  */
 public interface TagMapper extends BaseMapper<Tag> {
 
+    int myTagUpdateById(@Param("id") Long id);
 }

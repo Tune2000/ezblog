@@ -1,11 +1,12 @@
 package com.easy.controller;
 
 import com.easy.domain.ResponseResult;
+import com.easy.domain.dto.TagListDto;
+import com.easy.domain.vo.PageVo;
+import com.easy.domain.vo.TagVo;
 import com.easy.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/content/tag")
@@ -14,7 +15,27 @@ public class TagController {
     private TagService tagService;
 
     @GetMapping("/list")
-    public ResponseResult list(){
-        return ResponseResult.okResult(tagService.list());
+    public ResponseResult<PageVo> list(Integer pageNum, Integer pageSize, TagListDto tagListDto){
+        return tagService.pageTagList(pageNum,pageSize,tagListDto);
+    }
+
+    @PostMapping
+    public ResponseResult addTag(@RequestBody TagListDto tagListDto){
+        return tagService.addTag(tagListDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseResult deleteTag(@PathVariable Long id){
+        return tagService.deleteTag(id);
+    }
+
+    @GetMapping("{id}")
+    public ResponseResult getLableById(@PathVariable Long id) {
+        return  tagService.getLableById(id);
+    }
+
+    @PutMapping
+    public ResponseResult updateById(@RequestBody TagVo tagVo) {
+        return tagService.updateById(tagVo);
     }
 }

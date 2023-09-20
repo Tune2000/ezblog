@@ -1,7 +1,11 @@
 package com.easy.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.easy.domain.ResponseResult;
+import com.easy.domain.dto.TagListDto;
 import com.easy.domain.entity.Tag;
+import com.easy.domain.vo.PageVo;
+import com.easy.domain.vo.TagVo;
 
 
 /**
@@ -12,4 +16,13 @@ import com.easy.domain.entity.Tag;
  */
 public interface TagService extends IService<Tag> {
 
+    ResponseResult<PageVo> pageTagList(Integer pageNum, Integer pageSize, TagListDto tagListDto);
+
+    ResponseResult addTag(TagListDto tagListDto);
+
+    ResponseResult deleteTag(Long id);
+
+    ResponseResult getLableById(Long id);
+
+    ResponseResult updateById(TagVo tagVo);
 }
