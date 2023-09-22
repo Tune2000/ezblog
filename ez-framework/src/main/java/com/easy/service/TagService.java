@@ -5,7 +5,10 @@ import com.easy.domain.ResponseResult;
 import com.easy.domain.dto.TagListDto;
 import com.easy.domain.entity.Tag;
 import com.easy.domain.vo.PageVo;
+import com.easy.domain.vo.TagListVo;
 import com.easy.domain.vo.TagVo;
+
+import java.util.List;
 
 
 /**
@@ -25,4 +28,6 @@ public interface TagService extends IService<Tag> {
     ResponseResult getLableById(Long id);
 
     ResponseResult updateById(TagVo tagVo);
+
+    List<TagListVo> listAllTag();
 }

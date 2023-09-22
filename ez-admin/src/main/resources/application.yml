@@ -21,3 +21,7 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
       id-type: auto
+oss:
+  accessKey: holCc1wkAv0T16sPRTTcI9mCe3Y1TC5yf9mL-WBv
+  secretKey: FC8d00Pzh9CnirP7gC3JUZSp0tAtMlK_vK5uIjKt
+  bucket: ez-admin

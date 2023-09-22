@@ -3,10 +3,13 @@ package com.easy.controller;
 import com.easy.domain.ResponseResult;
 import com.easy.domain.dto.TagListDto;
 import com.easy.domain.vo.PageVo;
+import com.easy.domain.vo.TagListVo;
 import com.easy.domain.vo.TagVo;
 import com.easy.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/content/tag")
@@ -37,5 +40,11 @@ public class TagController {
     @PutMapping
     public ResponseResult updateById(@RequestBody TagVo tagVo) {
         return tagService.updateById(tagVo);
+    }
+
+    @GetMapping("/listAllTag")
+    public ResponseResult listAllTag(){
+        List<TagListVo> list = tagService.listAllTag();
+        return ResponseResult.okResult(list);
     }
 }

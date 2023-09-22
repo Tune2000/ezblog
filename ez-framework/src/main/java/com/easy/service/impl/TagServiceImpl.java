@@ -8,6 +8,7 @@ import com.easy.domain.dto.TagListDto;
 import com.easy.domain.entity.LoginUser;
 import com.easy.domain.entity.Tag;
 import com.easy.domain.vo.PageVo;
+import com.easy.domain.vo.TagListVo;
 import com.easy.domain.vo.TagVo;
 import com.easy.mapper.TagMapper;
 import com.easy.service.TagService;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 标签(Tag)表服务实现类
@@ -106,6 +108,7 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
     }
 
     @Override
+    //修改标签
     public ResponseResult updateById(TagVo tagVo) {
         //修改数据转换为Tag类型
         Tag tag = new Tag();
@@ -138,6 +141,16 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
         tagMapper.updateById(tag);
 
         return ResponseResult.okResult();
+    }
+
+    @Override
+    //获取所有标签
+    public List<TagListVo> listAllTag() {
+        LambdaQueryWrapper<Tag> wrapper = new LambdaQueryWrapper<>();
+        wrapper.select(Tag::getId,Tag::getName);
+        List<Tag> list = list(wrapper);
+        List<TagListVo> tagVos = BeanCopyUtils.copyBeanList(list, TagListVo.class);
+        return tagVos;
     }
 
 
