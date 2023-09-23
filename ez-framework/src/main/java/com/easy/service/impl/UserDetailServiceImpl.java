@@ -1,8 +1,10 @@
 package com.easy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.easy.constants.SystemConstants;
 import com.easy.domain.entity.LoginUser;
 import com.easy.domain.entity.User;
+import com.easy.mapper.MenuMapper;
 import com.easy.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -24,6 +27,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private MenuMapper menuMapper;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //根据用户名查询用户信息
@@ -36,7 +42,13 @@ public class UserDetailServiceImpl implements UserDetailsService {
         }
         //返回用户信息
 
-        // TODO 查询权限信息封装
-        return new LoginUser(user);
+        //查询权限信息封装
+        //如果是后台用户才需要查询权限封装
+        //返回用户信息
+        if(user.getType().equals(SystemConstants.ADMAIN)){
+            List<String> list = menuMapper.selectPermsByUserId(user.getId());
+            return new LoginUser(user,list);
+        }
+        return new LoginUser(user,null);
     }
 }

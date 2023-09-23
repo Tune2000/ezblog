@@ -7,6 +7,7 @@ import com.easy.domain.vo.TagListVo;
 import com.easy.domain.vo.TagVo;
 import com.easy.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,6 +42,7 @@ public class TagController {
     public ResponseResult updateById(@RequestBody TagVo tagVo) {
         return tagService.updateById(tagVo);
     }
+
 
     @GetMapping("/listAllTag")
     public ResponseResult listAllTag(){
