@@ -6,13 +6,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.easy.constants.SystemConstants;
 import com.easy.domain.ResponseResult;
 import com.easy.domain.dto.AddArticleDto;
+import com.easy.domain.dto.ArticleDto;
 import com.easy.domain.entity.Article;
 import com.easy.domain.entity.ArticleTag;
 import com.easy.domain.entity.Category;
-import com.easy.domain.vo.ArticleDetailVo;
-import com.easy.domain.vo.ArticleListVo;
-import com.easy.domain.vo.HotArticleVo;
-import com.easy.domain.vo.PageVo;
+import com.easy.domain.vo.*;
 import com.easy.mapper.ArticleMapper;
 import com.easy.service.ArticleService;
 import com.easy.service.ArticleTagService;
@@ -21,6 +19,7 @@ import com.easy.utils.BeanCopyUtils;
 import com.easy.utils.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -146,6 +145,62 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         //添加 博客和标签的关联
         articleTagService.saveBatch(articleTags);
         return ResponseResult.okResult();
+    }
+
+    @Override
+    //分页查询文章
+    public PageVo selectArticlePage(Article article, Integer pageNum, Integer pageSize) {
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(StringUtils.hasText(article.getTitle()),Article::getTitle,article.getTitle());
+        queryWrapper.like(StringUtils.hasText(article.getSummary()),Article::getSummary,article.getSummary());
+
+        Page<Article> page = new Page<>();
+        page.setCurrent(pageNum);
+        page.setSize(pageSize);
+        page(page,queryWrapper);
+
+        //转换成VO
+        List<Article> articles = page.getRecords();
+
+        PageVo pageVo = new PageVo();
+        pageVo.setTotal(page.getTotal());
+        pageVo.setRows(articles);
+        return pageVo;
+    }
+
+    @Override
+    //修改文章
+    //1.根据文章id查询文章
+    public ArticleByIdVo getInfo(Long id) {
+        Article article = getById(id);
+        //获取关联标签
+        LambdaQueryWrapper<ArticleTag> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(ArticleTag::getArticleId,article.getId());
+        List<ArticleTag> articleTags = articleTagService.list(lambdaQueryWrapper);
+        List<Long> tags = articleTags.stream()
+                                     .map(articleTag -> articleTag.getTagId())
+                                     .collect(Collectors.toList());
+        ArticleByIdVo articleVo = BeanCopyUtils.copyBean(article, ArticleByIdVo.class);
+        articleVo.setTags(tags);
+        return articleVo;
+    }
+
+    @Override
+    //修改文章
+    //2.修改文章
+    public void edit(ArticleDto articleDto) {
+        Article article = BeanCopyUtils.copyBean(articleDto, Article.class);
+        //更新博客信息
+        updateById(article);
+        //删除原有的标签和博客的关联
+        LambdaQueryWrapper<ArticleTag> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(ArticleTag::getArticleId,article.getId());
+        articleTagService.remove(lambdaQueryWrapper);
+        //添加新的博客和标签的关联信息
+        List<ArticleTag> articleTags = articleDto.getTags().stream()
+                .map(tagId -> new ArticleTag(articleDto.getId(), tagId))
+                .collect(Collectors.toList());
+        articleTagService.saveBatch(articleTags);
     }
 }
 
