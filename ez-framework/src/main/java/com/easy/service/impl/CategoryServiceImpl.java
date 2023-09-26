@@ -1,20 +1,24 @@
 package com.easy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.easy.constants.SystemConstants;
 import com.easy.domain.ResponseResult;
 import com.easy.domain.entity.Article;
 import com.easy.domain.entity.Category;
 import com.easy.domain.vo.CategoryVo;
+import com.easy.domain.vo.PageVo;
 import com.easy.mapper.CategoryMapper;
 import com.easy.service.ArticleService;
 import com.easy.service.CategoryService;
 import com.easy.utils.BeanCopyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -62,5 +66,26 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         List<Category> list = list(wrapper);
         List<CategoryVo> categoryVos = BeanCopyUtils.copyBeanList(list, CategoryVo.class);
         return categoryVos;
+    }
+
+    @Override
+    //分页查询分类列表
+    public PageVo selectCategoryPage(Category category, Integer pageNum, Integer pageSize) {
+        LambdaQueryWrapper<Category> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.like(StringUtils.hasText(category.getName()),Category::getName,category.getName());
+        lambdaQueryWrapper.eq(Objects.nonNull(category.getStatus()),Category::getStatus,category.getStatus());
+
+        Page<Category> page = new Page<>();
+        page.setCurrent(pageNum);
+        page.setSize(pageSize);
+        page(page,lambdaQueryWrapper);
+
+        //转换成VO
+        List<Category> categories = page.getRecords();
+
+        PageVo pageVo = new PageVo();
+        pageVo.setTotal(page.getTotal());
+        pageVo.setRows(categories);
+        return pageVo;
     }
 }

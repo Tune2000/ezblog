@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.easy.domain.ResponseResult;
 import com.easy.domain.entity.Category;
 import com.easy.domain.vo.CategoryVo;
+import com.easy.domain.vo.PageVo;
 
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface CategoryService extends IService<Category> {
     ResponseResult getCategoryList();
 
     List<CategoryVo> listAllCategory();
+
+    PageVo selectCategoryPage(Category category, Integer pageNum, Integer pageSize);
 }
