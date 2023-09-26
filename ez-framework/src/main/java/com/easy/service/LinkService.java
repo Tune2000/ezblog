@@ -3,6 +3,7 @@ package com.easy.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.easy.domain.ResponseResult;
 import com.easy.domain.entity.Link;
+import com.easy.domain.vo.PageVo;
 
 
 /**
@@ -14,4 +15,6 @@ import com.easy.domain.entity.Link;
 public interface LinkService extends IService<Link> {
 
     ResponseResult getAllLink();
+
+    PageVo selectLinkPage(Link link, Integer pageNum, Integer pageSize);
 }
