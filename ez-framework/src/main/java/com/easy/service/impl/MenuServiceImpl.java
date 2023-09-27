@@ -8,6 +8,7 @@ import com.easy.mapper.MenuMapper;
 import com.easy.service.MenuService;
 import com.easy.utils.SecurityUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,6 +59,34 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         //先找出第一层的菜单  然后去找他们的子菜单设置到children属性中
         List<Menu> menuTree = builderMenuTree(menus,0L);
         return menuTree;
+    }
+
+    //查询菜单列表
+    @Override
+    public List<Menu> selectMenuList(Menu menu) {
+
+        LambdaQueryWrapper<Menu> queryWrapper = new LambdaQueryWrapper<>();
+        //menuName模糊查询
+        queryWrapper.like(StringUtils.hasText(menu.getMenuName()),Menu::getMenuName,menu.getMenuName());
+        queryWrapper.eq(StringUtils.hasText(menu.getStatus()),Menu::getStatus,menu.getStatus());
+        //排序 parent_id和order_num
+        queryWrapper.orderByAsc(Menu::getParentId,Menu::getOrderNum);
+        List<Menu> menus = list(queryWrapper);;
+        return menus;
+    }
+
+    //删除菜单-是否存在子菜单
+    @Override
+    public boolean hasChild(Long menuId) {
+        LambdaQueryWrapper<Menu> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Menu::getParentId,menuId);
+        return count(queryWrapper) != 0;
+    }
+
+    //修改角色-根据角色id查询对应角色菜单列表树
+    @Override
+    public List<Long> selectMenuListByRoleId(Long roleId) {
+        return getBaseMapper().selectMenuListByRoleId(roleId);
     }
 
     // Menu添加了@Accessors(chain = true)注解，变成链式编程，返回调用它本身
