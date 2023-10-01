@@ -20,13 +20,18 @@ import java.io.IOException;
  */
 
 @Component
+//自定义认证失败的处理器。
 public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+
+        //输出异常信息
         authException.printStackTrace();
         //InsufficientAuthenticationException
         //BadCredentialsException
+
+        //判断是登录才出现异常(返回'用户名或密码错误')，还是没有登录就访问特定接口才出现的异常(返回'需要登录后访问')，还是其它情况(返回'出现错误')
         ResponseResult result = null;
         if(authException instanceof BadCredentialsException){
             result = ResponseResult.errorResult(AppHttpCodeEnum.LOGIN_ERROR.getCode(),authException.getMessage());
@@ -35,7 +40,7 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
         }else{
             result = ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR.getCode(),"认证或授权失败");
         }
-        //响应给前端
+        //使用spring提供的JSON工具类，把上一行的result转换成JSON，然后响应给前端。WebUtils是我们写的类
         WebUtils.renderString(response, JSON.toJSONString(result));
     }
 }

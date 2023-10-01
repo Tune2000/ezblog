@@ -20,7 +20,9 @@ public class BlogLoginController {
     private BlogLoginService blogLoginService;
 
     @PostMapping("/login")
+
     @ApiOperation(value = "登录")
+
     public ResponseResult login(@RequestBody User user){
         if(!StringUtils.hasText(user.getUserName())) {
             // 提示：必须要传用户名

@@ -42,6 +42,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Autowired
     private RedisCache redisCache;
 
+    //查询热门文章列表
     @Override
     public ResponseResult hotArticleList() {
         // 查询热门文章，封装成ResponseResult返回
@@ -51,7 +52,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         // 按照浏览量进行排序
         queryWrapper.orderByDesc(Article::getViewCount);
         // 最多查询10条数据
-        Page<Article> page = new Page<>(1,10);
+        Page<Article> page = new Page<>(SystemConstants.ARTICLE_STATUS_CURRENT,SystemConstants.ARTICLE_STATUS_SIZE);
         page(page,queryWrapper);
 
         List<Article> articles = page.getRecords();
@@ -71,21 +72,25 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         return ResponseResult.okResult(hotArticleVos);
     }
 
+    //分页查询文章的列表
     @Override
     public ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId) {
         //查询条件
         LambdaQueryWrapper<Article> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        // 如果 有categoryId 就要 查询时要和传入的相同
+        //判空。如果前端传了categoryId这个参数，那么查询时要和传入的相同。第二个参数是数据表的文章id，第三个字段是前端传来的文章id
         lambdaQueryWrapper.eq(Objects.nonNull(categoryId)&&categoryId>0 ,Article::getCategoryId,categoryId);
-        // 状态是正式发布的
+        //只查询状态是正式发布的文章。Article实体类的status字段跟0作比较，一样就表示是正式发布的
         lambdaQueryWrapper.eq(Article::getStatus,SystemConstants.ARTICLE_STATUS_NORMAL);
-        // 对isTop进行降序
+        //对isTop字段进行降序排序，实现置顶的文章(isTop值为1)在最前面
         lambdaQueryWrapper.orderByDesc(Article::getIsTop);
 
         //分页查询
         Page<Article> page = new Page<>(pageNum,pageSize);
         page(page,lambdaQueryWrapper);
 
+        /**
+         * 解决categoryName字段没有返回值的问题。在分页之后，封装成ArticleListVo之前，进行处理
+         */
         List<Article> articles = page.getRecords();
 
         //查询categoryName
@@ -101,6 +106,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         //封装查询结果
         List<ArticleListVo> articleListVos = BeanCopyUtils.copyBeanList(page.getRecords(), ArticleListVo.class);
 
+        //把封装的查询结果和文章总数封装在PageVo(我们写的实体类)
         PageVo pageVo = new PageVo(articleListVos,page.getTotal());
         return ResponseResult.okResult(pageVo);
     }

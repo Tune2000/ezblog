@@ -14,13 +14,13 @@ import com.easy.domain.vo.PageVo;
  * @description:
  */
 public interface ArticleService extends IService<Article> {
-
+    //查询热门文章列表
     ResponseResult hotArticleList();
-
+    //分类查询文章列表
     ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId);
-
+    //根据id查询文章详情
     ResponseResult getArticleDetail(Long id);
-
+    //根据文章id从mysql查询文章
     ResponseResult updateViewCount(Long id);
 
     ResponseResult add(AddArticleDto article);

@@ -22,11 +22,12 @@ public class ViewCountRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        //查询博客信息  id  viewCount
+        ////查询数据库中的博客信息，注意只需要查询id、viewCount字段的博客信息
         List<Article> articles = articleMapper.selectList(null);
         Map<String, Integer> viewCountMap = articles.stream()
+                //由于我们需要key、value的数据，所以可以通过stream流
                 .collect(Collectors.toMap(article -> article.getId().toString(), article -> {
-                    return article.getViewCount().intValue();//
+                    return article.getViewCount().intValue();
                 }));
         //存储到redis中
         redisCache.setCacheMap("article:viewCount",viewCountMap);

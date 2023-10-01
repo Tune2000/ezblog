@@ -15,7 +15,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @SpringBootApplication
 @MapperScan("com.easy.mapper")
-@EnableScheduling
+@EnableScheduling//@EnableScheduling是spring提供的定时任务的注解
 @EnableSwagger2
 public class EZBlogApplication {
     public static void main(String[] args) {

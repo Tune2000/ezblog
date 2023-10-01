@@ -9,7 +9,8 @@ import com.easy.domain.entity.User;
  * @description:
  */
 public interface BlogLoginService {
+    //登录
     ResponseResult login(User user);
-
+    //退出
     ResponseResult logout();
 }

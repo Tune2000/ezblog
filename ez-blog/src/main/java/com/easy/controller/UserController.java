@@ -19,19 +19,21 @@ public class UserController {
 
     @GetMapping("/userInfo")
     @ApiOperation(value = "个人信息",notes = "获取用户信息")
+    @SystemLog(BusinessName = "查询个人信息")//接口描述，用于'日志记录'功能
     public ResponseResult userInfo(){
         return userService.userInfo();
     }
 
     @PutMapping("/userInfo")
     @ApiOperation(value = "个人信息",notes = "更新用户信息")
-    @SystemLog(BusinessName="更新用户信息")
+    @SystemLog(BusinessName="更新用户信息")//接口描述，用于'日志记录'功能
     public ResponseResult updateUserInfo(@RequestBody User user){
         return userService.updateUserInfo(user);
     }
 
     @PostMapping("/register")
     @ApiOperation(value = "个人信息",notes = "用户注册")
+    @SystemLog(BusinessName = "用户注册")//接口描述，用于'日志记录'功能
     public ResponseResult register(@RequestBody User user){
         return userService.register(user);
     }

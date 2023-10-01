@@ -12,11 +12,13 @@ import com.easy.domain.entity.User;
  * @since 2023-08-12 13:22:09
  */
 public interface UserService extends IService<User> {
-
+    //查询个人信息
     ResponseResult userInfo();
 
+    //更新个人信息
     ResponseResult updateUserInfo(User user);
 
+    //用户注册功能
     ResponseResult register(User user);
 
     //查询用户列表

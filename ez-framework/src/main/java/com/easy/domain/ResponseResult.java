@@ -5,6 +5,7 @@ import com.easy.enums.AppHttpCodeEnum;
 
 import java.io.Serializable;
 
+//统一响应格式。实体类，或者这个类严格来说叫响应体
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseResult<T> implements Serializable {
     private Integer code;

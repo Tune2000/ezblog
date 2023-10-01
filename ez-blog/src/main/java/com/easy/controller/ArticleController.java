@@ -24,6 +24,7 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
+    //查询热门文章列表
     @GetMapping("/hotArticleList")
     @ApiOperation(value = "热门文章列表",notes = "获取热门文章")
     public ResponseResult hotArticleList() {
@@ -33,6 +34,7 @@ public class ArticleController {
         return result;
     }
 
+    //分页查询文章的列表
     @GetMapping("/articleList")
     @ApiOperation(value = "文章列表",notes = "获取文章列表")
     @ApiImplicitParams({
@@ -45,13 +47,16 @@ public class ArticleController {
         return articleService.articleList(pageNum,pageSize,categoryId);
     }
 
+    //查询文章详情
     @GetMapping("/{id}")
+    //路径参数形式的HTTP请求，注意只有加@PathVariable注解才能接收路径参数形式的HTTP请求
     @ApiOperation(value = "获取文章详情",notes = "获取文章详情")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "文章id")
     }
     )
-    public ResponseResult getArticleDetail(@PathVariable("id") Long id){
+    public ResponseResult getArticleDetail(@PathVariable("id") Long id){//注解里指定的id跟上一行保持一致
+        //根据id查询文章详情
         return articleService.getArticleDetail(id);
     }
 
@@ -59,8 +64,8 @@ public class ArticleController {
     @ApiOperation(value = "文章浏览量",notes = "更新文章浏览量")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "文章id")
-    }
-    )
+    })
+
     public ResponseResult updateViewCount(@PathVariable("id") Long id){
         return articleService.updateViewCount(id);
     }

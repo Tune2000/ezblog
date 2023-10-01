@@ -75,6 +75,6 @@ public class OssUploadService implements UploadService {
         } catch (Exception ex) {
             //ignore
         }
-        return "www";
+        return "上传失败";
     }
 }

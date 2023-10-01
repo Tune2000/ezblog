@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Override
+    //查询个人信息
     public ResponseResult userInfo() {
         //获取当前用户id
         Long userId = SecurityUtils.getUserId();
@@ -47,7 +48,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    //更新个人信息
     public ResponseResult updateUserInfo(User user) {
+        //updateById是mybatisplus提供的方法
         updateById(user);
         return ResponseResult.okResult();
     }
@@ -55,19 +58,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Override
+    //用户注册功能
     public ResponseResult register(User user) {
-        //对数据进行非空判断
+        //对前端传过来的数据进行非空判断
+        //用户名
         if(!StringUtils.hasText(user.getUserName())){
             throw new SystemException(AppHttpCodeEnum.USERNAME_NOT_NULL);
         }
+        //密码
         if(!StringUtils.hasText(user.getPassword())){
             throw new SystemException(AppHttpCodeEnum.PASSWORD_NOT_NULL);
         }
+        //邮箱
         if(!StringUtils.hasText(user.getEmail())){
             throw new SystemException(AppHttpCodeEnum.EMAIL_NOT_NULL);
         }
+        //昵称
         if(!StringUtils.hasText(user.getNickName())){
             throw new SystemException(AppHttpCodeEnum.NICKNAME_NOT_NULL);
+        }
+        //手机号码
+        if(!StringUtils.hasText(user.getPhonenumber())){
+            throw new SystemException(AppHttpCodeEnum.PHONENUMBER_NOT_NULL);
         }
         //对数据进行是否存在的判断
         if(userNameExist(user.getUserName())){
@@ -81,25 +93,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         //对密码进行加密
+        //经过上面的判断，可以确保用户传给我们的用户名和昵称是数据库不存在的，且相关字段都不为空。就可以存入数据库
+        //注意用户传给我们的密码是明文，对于密码我们要转成密文之后再存入数据库。注意加密要和解密用同一套算法
+        //在ez-blog工程的securityConfig类里面有解密算法，当时我们写了一个passwordEncoder方法，并且注入到了spring容器
         String encodePassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodePassword);
         //存入数据库
         save(user);
         return ResponseResult.okResult();
     }
-
+    //'判断用户传给我们的用户名是否在数据库已经存在' 的方法
     private boolean EmailExist(String email) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getEmail,email);
         return count(queryWrapper)>0;
     }
 
+    //'判断用户传给我们的昵称是否在数据库已经存在' 的方法
     private boolean nickNameExist(String nickName) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getNickName,nickName);
         return count(queryWrapper)>0;
     }
 
+    //'判断用户传给我们的邮箱是否在数据库已经存在' 的方法
     private boolean userNameExist(String userName) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUserName,userName);

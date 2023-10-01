@@ -18,9 +18,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * @author wxx
  * @create 08--07--10:49
  * @description:
- * 后台系统常用，不做在公共模块
  */
 @Configuration
+//WebSecurityConfigurerAdapter是Security官方提供的类
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     // 在SecurityConfig中配置把AuthenticationManager注入容器
@@ -32,11 +32,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
+    //注入我们在ez-blog工程写的JwtAuthenticationTokenFilter过滤器
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
     @Autowired
+    //注入官方的认证失败的处理器。注意不用写private，并且不是注入我们自定义的认证失败处理器。理由:符合开闭原则
+    //虽然我们注入的不是自己写的认证失败处理器，但是最终用的实际上就是我们写的，Security会自己去找我们写的
     AuthenticationEntryPoint authenticationEntryPoint;
+
     @Autowired
+    //注入官方的授权失败的处理器。注意不用写private，并且不是注入我们自定义的授权失败处理器。理由:符合开闭原则
+    //虽然我们注入的不是自己写的授权失败处理器，但是最终用的实际上就是我们写的，Security会自己去找我们写的
     AccessDeniedHandler accessDeniedHandler;
 
     @Override
@@ -64,13 +70,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http.logout().disable();
-        //把jwtAuthenticationTokenFilter添加到SpringSecurity的过滤器链中
+        //把我们在ez-blog工程写的JwtAuthenticationTokenFilter过滤器添加到Security的过滤器链中
+        //第一个参数是你要添加的过滤器，第二个参数是你想把你的过滤器添加到哪个security官方过滤器之前
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
         //允许跨域
         http.cors();
     }
 
     @Bean
+    //把官方的PasswordEncoder密码加密方式替换成BCryptPasswordEncoder
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }

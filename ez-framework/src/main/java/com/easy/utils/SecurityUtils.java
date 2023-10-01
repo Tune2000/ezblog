@@ -8,7 +8,7 @@ public class SecurityUtils
 {
 
     /**
-     * 获取用户
+     * 获取用户的userid
      **/
     public static LoginUser getLoginUser()
     {
@@ -22,6 +22,10 @@ public class SecurityUtils
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
+    /**
+     * 指定userid为1的用户就是网站管理员
+     * @return
+     */
     public static Boolean isAdmin(){
         Long id = getLoginUser().getUser().getId();
         return id != null && id.equals(1L);
