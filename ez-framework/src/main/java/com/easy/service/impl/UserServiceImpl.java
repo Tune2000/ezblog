@@ -77,10 +77,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if(!StringUtils.hasText(user.getNickName())){
             throw new SystemException(AppHttpCodeEnum.NICKNAME_NOT_NULL);
         }
-        //手机号码
-        if(!StringUtils.hasText(user.getPhonenumber())){
-            throw new SystemException(AppHttpCodeEnum.PHONENUMBER_NOT_NULL);
-        }
         //对数据进行是否存在的判断
         if(userNameExist(user.getUserName())){
             throw new SystemException(AppHttpCodeEnum.USERNAME_EXIST);
